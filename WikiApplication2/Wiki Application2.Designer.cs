@@ -37,14 +37,17 @@
             this.Name = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.comboBoxCategory = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.radioButtonLinear = new System.Windows.Forms.RadioButton();
-            this.radioButton2NonLinear = new System.Windows.Forms.RadioButton();
+            this.radioButtonNonLinear = new System.Windows.Forms.RadioButton();
             this.buttonOpen = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonSearch = new System.Windows.Forms.Button();
             this.listViewWiki = new System.Windows.Forms.ListView();
             this.label1 = new System.Windows.Forms.Label();
+            this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnCategory = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButtonLinear = new System.Windows.Forms.RadioButton();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonAdd
@@ -55,6 +58,7 @@
             this.buttonAdd.TabIndex = 0;
             this.buttonAdd.Text = "ADD";
             this.buttonAdd.UseVisualStyleBackColor = true;
+            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
             // buttonDelete
             // 
@@ -90,7 +94,7 @@
             // 
             // textBoxDefinition
             // 
-            this.textBoxDefinition.Location = new System.Drawing.Point(17, 170);
+            this.textBoxDefinition.Location = new System.Drawing.Point(15, 177);
             this.textBoxDefinition.Multiline = true;
             this.textBoxDefinition.Name = "textBoxDefinition";
             this.textBoxDefinition.Size = new System.Drawing.Size(182, 175);
@@ -123,40 +127,20 @@
             this.comboBoxCategory.Size = new System.Drawing.Size(108, 21);
             this.comboBoxCategory.TabIndex = 9;
             // 
-            // label3
+            // radioButtonNonLinear
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 99);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 13);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Structure:";
-            // 
-            // radioButtonLinear
-            // 
-            this.radioButtonLinear.AutoSize = true;
-            this.radioButtonLinear.Location = new System.Drawing.Point(26, 124);
-            this.radioButtonLinear.Name = "radioButtonLinear";
-            this.radioButtonLinear.Size = new System.Drawing.Size(54, 17);
-            this.radioButtonLinear.TabIndex = 11;
-            this.radioButtonLinear.TabStop = true;
-            this.radioButtonLinear.Text = "Linear";
-            this.radioButtonLinear.UseVisualStyleBackColor = true;
-            // 
-            // radioButton2NonLinear
-            // 
-            this.radioButton2NonLinear.AutoSize = true;
-            this.radioButton2NonLinear.Location = new System.Drawing.Point(98, 124);
-            this.radioButton2NonLinear.Name = "radioButton2NonLinear";
-            this.radioButton2NonLinear.Size = new System.Drawing.Size(77, 17);
-            this.radioButton2NonLinear.TabIndex = 12;
-            this.radioButton2NonLinear.TabStop = true;
-            this.radioButton2NonLinear.Text = "Non-Linear";
-            this.radioButton2NonLinear.UseVisualStyleBackColor = true;
+            this.radioButtonNonLinear.AutoSize = true;
+            this.radioButtonNonLinear.Location = new System.Drawing.Point(106, 19);
+            this.radioButtonNonLinear.Name = "radioButtonNonLinear";
+            this.radioButtonNonLinear.Size = new System.Drawing.Size(77, 17);
+            this.radioButtonNonLinear.TabIndex = 12;
+            this.radioButtonNonLinear.TabStop = true;
+            this.radioButtonNonLinear.Text = "Non-Linear";
+            this.radioButtonNonLinear.UseVisualStyleBackColor = true;
             // 
             // buttonOpen
             // 
-            this.buttonOpen.Location = new System.Drawing.Point(17, 351);
+            this.buttonOpen.Location = new System.Drawing.Point(17, 368);
             this.buttonOpen.Name = "buttonOpen";
             this.buttonOpen.Size = new System.Drawing.Size(75, 23);
             this.buttonOpen.TabIndex = 13;
@@ -165,7 +149,7 @@
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(117, 351);
+            this.buttonSave.Location = new System.Drawing.Point(118, 368);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
             this.buttonSave.TabIndex = 14;
@@ -183,35 +167,70 @@
             // 
             // listViewWiki
             // 
+            this.listViewWiki.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnName,
+            this.columnCategory});
             this.listViewWiki.HideSelection = false;
-            this.listViewWiki.Location = new System.Drawing.Point(214, 56);
+            this.listViewWiki.Location = new System.Drawing.Point(205, 56);
             this.listViewWiki.Name = "listViewWiki";
-            this.listViewWiki.Size = new System.Drawing.Size(214, 318);
+            this.listViewWiki.Size = new System.Drawing.Size(232, 318);
             this.listViewWiki.TabIndex = 16;
             this.listViewWiki.UseCompatibleStateImageBehavior = false;
+            this.listViewWiki.View = System.Windows.Forms.View.Details;
+            this.listViewWiki.VirtualMode = true;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 144);
+            this.label1.Location = new System.Drawing.Point(14, 161);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 17;
             this.label1.Text = "Definition:";
             // 
+            // columnName
+            // 
+            this.columnName.Text = "Name";
+            this.columnName.Width = 104;
+            // 
+            // columnCategory
+            // 
+            this.columnCategory.Text = "Category";
+            this.columnCategory.Width = 129;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.radioButtonLinear);
+            this.groupBox1.Controls.Add(this.radioButtonNonLinear);
+            this.groupBox1.Location = new System.Drawing.Point(10, 102);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(189, 56);
+            this.groupBox1.TabIndex = 18;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Structure";
+            // 
+            // radioButtonLinear
+            // 
+            this.radioButtonLinear.AutoSize = true;
+            this.radioButtonLinear.Location = new System.Drawing.Point(17, 19);
+            this.radioButtonLinear.Name = "radioButtonLinear";
+            this.radioButtonLinear.Size = new System.Drawing.Size(54, 17);
+            this.radioButtonLinear.TabIndex = 13;
+            this.radioButtonLinear.TabStop = true;
+            this.radioButtonLinear.Text = "Linear";
+            this.radioButtonLinear.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 391);
+            this.ClientSize = new System.Drawing.Size(449, 413);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listViewWiki);
             this.Controls.Add(this.buttonSearch);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonOpen);
-            this.Controls.Add(this.radioButton2NonLinear);
-            this.Controls.Add(this.radioButtonLinear);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.comboBoxCategory);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.Name);
@@ -223,6 +242,8 @@
             this.Controls.Add(this.buttonAdd);
             this.Name = "Form1";
             this.Text = "Wiki Application2";
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -239,14 +260,16 @@
         private System.Windows.Forms.Label Name;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxCategory;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.RadioButton radioButtonLinear;
-        private System.Windows.Forms.RadioButton radioButton2NonLinear;
+        private System.Windows.Forms.RadioButton radioButtonNonLinear;
         private System.Windows.Forms.Button buttonOpen;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonSearch;
         private System.Windows.Forms.ListView listViewWiki;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ColumnHeader columnName;
+        private System.Windows.Forms.ColumnHeader columnCategory;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radioButtonLinear;
     }
 }
 
