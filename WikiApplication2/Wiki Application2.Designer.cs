@@ -42,9 +42,9 @@
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonSearch = new System.Windows.Forms.Button();
             this.listViewWiki = new System.Windows.Forms.ListView();
-            this.label1 = new System.Windows.Forms.Label();
             this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnCategory = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButtonLinear = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
@@ -108,7 +108,6 @@
             this.Name.Size = new System.Drawing.Size(38, 13);
             this.Name.TabIndex = 7;
             this.Name.Text = "Name:";
-            this.Name.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -121,7 +120,15 @@
             // 
             // comboBoxCategory
             // 
+            this.comboBoxCategory.AllowDrop = true;
             this.comboBoxCategory.FormattingEnabled = true;
+            this.comboBoxCategory.Items.AddRange(new object[] {
+            "Array",
+            "List",
+            "Tree",
+            "Graphs",
+            "Abstract",
+            "Hash"});
             this.comboBoxCategory.Location = new System.Drawing.Point(67, 75);
             this.comboBoxCategory.Name = "comboBoxCategory";
             this.comboBoxCategory.Size = new System.Drawing.Size(108, 21);
@@ -179,15 +186,6 @@
             this.listViewWiki.View = System.Windows.Forms.View.Details;
             this.listViewWiki.VirtualMode = true;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 161);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(54, 13);
-            this.label1.TabIndex = 17;
-            this.label1.Text = "Definition:";
-            // 
             // columnName
             // 
             this.columnName.Text = "Name";
@@ -197,6 +195,15 @@
             // 
             this.columnCategory.Text = "Category";
             this.columnCategory.Width = 129;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 161);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(54, 13);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "Definition:";
             // 
             // groupBox1
             // 
@@ -240,7 +247,6 @@
             this.Controls.Add(this.buttonEdit);
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.buttonAdd);
-            this.Name = "Form1";
             this.Text = "Wiki Application2";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

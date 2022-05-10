@@ -16,13 +16,41 @@ namespace WikiApplication2
         {
             InitializeComponent();
         }
-        private void label1_Click(object sender, EventArgs e)
+        List<information> Wiki = new List<information>();
+        private void clearTextbox()
         {
+            textBoxName.Clear();
+            textBoxDefinition.Clear();
+        }
+        private void displayInformation()
+        {
+            listViewWiki.Items.Clear();
+
+            foreach (var info in Wiki)
+            {
+                ListViewItem list = new ListViewItem();
+            }
 
         }
+        private void vlaidName()
+        {
+            textBoxName.Clear();
+            textBoxDefinition.Clear();
+        }
+
+
         private void buttonAdd_Click(object sender, EventArgs e)
         {
+            information newInfor = new information();
 
+            newInfor.setName(textBoxName.Text);
+            newInfor.setCategory(comboBoxCategory.SelectedIndex.ToString());
+            newInfor.setDefinition(textBoxDefinition.Text);
+            Wiki.Add(newInfor);
+            clearTextbox();
+            displayInformation();
         }
+
+        
     }
 }
