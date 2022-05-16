@@ -29,6 +29,15 @@ namespace WikiApplication2
         {
             return Category;
         }
+        public void setStructure(string newStructure)
+        { 
+           Structure=newStructure;
+        }
+        public string getStructure()
+        {
+            return Structure;
+        }
+
         public void setDefinition(string newDefinitioin)
         {
             Definition = newDefinitioin;
