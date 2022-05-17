@@ -45,13 +45,35 @@ namespace WikiApplication2
         {
           
         }
-        private void highLightValue()
-        { 
-        
+        private Boolean highLightValue()
+        {
+            String structure = listViewWiki.SelectedItems[0].SubItems[2].Text;
+
+            if (structure == "Linear")
+            {
+                radioButtonLinear.Select();
+                //radioButtonLinear.BackColor = Color.Yellow;
+            }
+            else if (structure == "Non-Linear")
+            {
+                radioButtonNonLinear.Select();
+               // radioButtonNonLinear.BackColor = Color.Yellow;
+            }
+
+            return true;
         }
-        private void returnValue()
-        { 
-        
+        private string returnValue(string selectRadio)
+        {
+            if (radioButtonLinear.Checked)
+            {
+                selectRadio = radioButtonLinear.Text;
+            }
+            if (radioButtonNonLinear.Checked)
+            {
+                selectRadio = radioButtonNonLinear.Text;
+            }
+            MessageBox.Show(selectRadio);
+            return selectRadio;
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -59,16 +81,7 @@ namespace WikiApplication2
             information newInfo = new information();
             newInfo.setName(textBoxName.Text);
             newInfo.setCategory(comboBoxCategory.Text.ToString());
-            if(radioButtonLinear.Checked)
-            {
-                selectRadio=radioButtonLinear.Text;
-            }
-            if (radioButtonNonLinear.Checked)
-            { 
-               selectRadio = radioButtonNonLinear.Text;
-            }
-            newInfo.setStructure(selectRadio);
-            MessageBox.Show(selectRadio);
+            newInfo.setStructure(returnValue(selectRadio));
             newInfo.setDefinition(textBoxDefinition.Text);
             Wiki.Add(newInfo);
             clearTextbox();
@@ -102,11 +115,13 @@ namespace WikiApplication2
 
         private void radioButtonLinear_CheckedChanged(object sender, EventArgs e)
         {
+          
           //  structure = "Linear";
         }
 
         private void radioButtonNonLinear_CheckedChanged(object sender, EventArgs e)
         {
+
             //structure = "Non-Linear";
 
         }
@@ -125,21 +140,10 @@ namespace WikiApplication2
         {
             String name=listViewWiki.SelectedItems[0].SubItems[0].Text;
             String category = listViewWiki.SelectedItems[0].SubItems[1].Text;
-            String structure = listViewWiki.SelectedItems[0].SubItems[2].Text;
             String definition = listViewWiki.SelectedItems[0].SubItems[3].Text;
-
-
+            highLightValue();
             textBoxName.Text = name;
             comboBoxCategory.Text = category;
-            if(radioButtonLinear.Checked=true)
-            {
-                radioButtonLinear.Text = structure;
-            }
-            else if (radioButtonNonLinear.Checked=true)
-            {
-                radioButtonNonLinear.Text = structure;
-            }
-
             textBoxDefinition.Text = definition;
 
 
