@@ -6,12 +6,29 @@ using System.Threading.Tasks;
 
 namespace WikiApplication2
 {
-    internal class information
+    internal class Information : IComparable<Information>
     {
         public string Name { get; set; }
         public string Category { get; set; }
         public string Structure { get; set; }
         public string Definition { get; set; }
+
+        public Information()
+        {
+
+        }
+        public Information(string name)
+        {
+            this.Name = name;
+        }
+        public int CompareTo(Information otherName) 
+        {
+            return this.Name.CompareTo(otherName.Name);
+        }
+        //public int Compare(Information x, Information y)
+        //{ 
+        //    return x.Name.CompareTo(y.Name);
+        //}
 
         public void setName(string newName)
         {
