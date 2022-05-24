@@ -26,7 +26,6 @@ namespace WikiApplication2
             comboBoxCategory.Text = String.Empty;
             radioButtonLinear.Checked = false;
             radioButtonNonLinear.Checked = false;
-
         }
         private void displayInformation()
         {
@@ -50,29 +49,21 @@ namespace WikiApplication2
         }
         private Boolean highLightValue()
         {
-           // String structure = listViewWiki.SelectedItems[0].SubItems[2].Text;
             int currentRecord = listViewWiki.SelectedIndices[0];
-            String structure=listViewWiki.SelectedItems[0].SubItems[2].Text;
-            //textBoxName.Text = Wiki[currentRecord].getName();
+            string structure = Wiki[currentRecord].getStructure();
 
             if (structure == "Linear")
             {
-               // radioButtonLinear.Select();
-                //radioButtonLinear.BackColor = Color.Yellow;
-                radioButtonLinear.Text=Wiki[currentRecord].getStructure();
+                radioButtonLinear.Checked = true;
             }
-            else if (structure == "Non-Linear")
+            if (structure == "Non-Linear")
             {
-                //radioButtonNonLinear.Select();
-                // radioButtonNonLinear.BackColor = Color.Yellow;
-                radioButtonNonLinear.Text = Wiki[currentRecord].getStructure();
+                radioButtonNonLinear.Checked = true;
             }
-
             return true;
         }
         private string returnValue(string selectRadio)
         {
-            //Think of a way to use group box.
             Information info =new Information();
            // string selectRadio;
 
@@ -83,7 +74,7 @@ namespace WikiApplication2
                 info.setStructure(selectRadio);
                 
             }
-            if (radioButtonNonLinear.Checked)
+            else if (radioButtonNonLinear.Checked)
             {
                 selectRadio = radioButtonNonLinear.Text;
                 info.setStructure(selectRadio);
@@ -102,25 +93,28 @@ namespace WikiApplication2
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             Information info=new Information();
-            if (!validName(textBoxName.Text))
-            {
-                MessageBox.Show("The name is already existed");
-            }
 
-            else if (string.IsNullOrWhiteSpace(textBoxName.Text) && string.IsNullOrWhiteSpace(comboBoxCategory.Text) &&
-                string.IsNullOrWhiteSpace(returnValue(info.getStructure())) && string.IsNullOrWhiteSpace(textBoxDefinition.Text))
+            if (!string.IsNullOrWhiteSpace(textBoxName.Text) && !string.IsNullOrWhiteSpace(comboBoxCategory.Text) &&
+                !string.IsNullOrWhiteSpace(returnValue(selectRadio)) && !string.IsNullOrWhiteSpace(textBoxDefinition.Text))
             {
-                MessageBox.Show("Some text boxes are empty.");
-            }
-            else 
-            {
+                if (!validName(textBoxName.Text))
+                {
+                    MessageBox.Show("The name is already existed");
+                }
                 Information newInfo = new Information();
                 newInfo.setName(textBoxName.Text);
                 newInfo.setCategory(comboBoxCategory.Text.ToString());
-                newInfo.setStructure(returnValue(info.getStructure()));
+                newInfo.setStructure(returnValue(selectRadio));
                 newInfo.setDefinition(textBoxDefinition.Text);
                 Wiki.Add(newInfo);
+
+                MessageBox.Show(newInfo.getStructure());
             }
+            else 
+            {
+                MessageBox.Show("Some text boxes are empty.");
+            }
+          
             clearTextbox();
             displayInformation();
         }
@@ -183,81 +177,57 @@ namespace WikiApplication2
         private void buttonEdit_Click(object sender, EventArgs e)
         {
             Information info = new Information();
-            if (!validName(textBoxName.Text))
+            if (!string.IsNullOrWhiteSpace(textBoxName.Text) && !string.IsNullOrWhiteSpace(comboBoxCategory.Text) &&
+                !string.IsNullOrWhiteSpace(returnValue(selectRadio)) && !string.IsNullOrWhiteSpace(textBoxDefinition.Text))
             {
-                MessageBox.Show("The name is already existed");
+                if (!validName(textBoxName.Text))
+                {
+                    MessageBox.Show("The name is already existed");
+                }
+                int currentRecord = listViewWiki.SelectedIndices[0];
+
+                Wiki[currentRecord].setName(textBoxName.Text);
+                Wiki[currentRecord].setCategory(comboBoxCategory.Text);
+                Wiki[currentRecord].setStructure(returnValue(info.getStructure()));
+                Wiki[currentRecord].setDefinition(textBoxDefinition.Text);
+                displayInformation();
+                clearTextbox();
             }
-            else if (string.IsNullOrWhiteSpace(textBoxName.Text) && string.IsNullOrWhiteSpace(comboBoxCategory.Text) &&
-                string.IsNullOrWhiteSpace(returnValue(info.getStructure())) && string.IsNullOrWhiteSpace(textBoxDefinition.Text))
+            else
             {
                 MessageBox.Show("Some text boxes are empty.");
             }
-            else 
-            {
-                int currentRecord = listViewWiki.SelectedIndices[0];
-
-                //Wiki.Insert(currentRecord, )
-                //listViewWiki.SelectedItems[0].Text = textBoxName.Text;
-                //listViewWiki.SelectedItems[0].SubItems[1].Text = comboBoxCategory.Text;
-                //listViewWiki.SelectedItems[0].SubItems[3].Text = textBoxDefinition.Text;
-                //listViewWiki.SelectedItems[0].SubItems[2].Text = returnValue(info.getStructure());
-
-                textBoxName.Text = Wiki[currentRecord].getName();
-                comboBoxCategory.Text = Wiki[currentRecord].getCategory();
-                highLightValue();
-                textBoxDefinition.Text = Wiki[currentRecord].getDefinition();
-
-                info.setName(textBoxName.Text);
-                info.setCategory(comboBoxCategory.Text.ToString());
-                info.setStructure(returnValue(info.getStructure()));
-                info.setDefinition(textBoxDefinition.Text);
-                Wiki.Add(info);
-                clearTextbox();
-                sortData();
-            }
-            displayInformation();
         }
 
         private void buttonSearch_Click(object sender, EventArgs e)
         {
+            
             int index = Wiki.BinarySearch(new Information(textBoxSearch.Text));
 
-            //listViewWiki.Items.Clear();
             if (!string.IsNullOrEmpty(textBoxSearch.Text))
             {
                 if (index >= 0)
                 {
-                    toolStripStatusLabel.Text = "Found";
-                    //displayInformation();
+                    textBoxName.Text = Wiki[index].getName();
+                    comboBoxCategory.Text = Wiki[index].getCategory();
+                    textBoxDefinition.Text = Wiki[index].getDefinition();
+                    displayInformation();
                     listViewWiki.Items[index].BackColor = Color.Yellow;
-                    //String name = listViewWiki.SelectedItems[index].Text;
-                   // String category = listViewWiki.SelectedItems[index].SubItems[1].Text;
-                    //String definition = listViewWiki.SelectedItems[index].SubItems[3].Text;
-                    //highLightValue();
-                    //textBoxName.Text = name;
-                    //comboBoxCategory.Text = category;
-                    //textBoxDefinition.Text = definition;
-                    //textBoxName.Text= listViewWiki.SelectedItems[index].Text;
-                    //comboBoxCategory.Text = listViewWiki.SelectedItems[index].SubItems[1].Text;
-                   // textBoxDefinition.Text= listViewWiki.SelectedItems[index].SubItems[3].Text;
-                    //String structure = listViewWiki.SelectedItems[index].SubItems[2].Text;
-                    //highLightValue();
                 }
                 else
                 {
                     toolStripStatusLabel.Text = " ";
                     toolStripStatusLabel.Text = " Not Found ";
-                   // MessageBox.Show("Not found");
-                  //  displayInformation();
                 }
-                //displayInformation();
+                displayInformation();
+                toolStripStatusLabel.Text = "Found";
                 textBoxSearch.Clear();
             }
-            else 
-            { 
+            else
+            {
                 MessageBox.Show("Enter the searched data name.");
             }
-            //displayInformation();
+            displayInformation();
         }
 
         private void buttonOpen_Click(object sender, EventArgs e)
@@ -277,13 +247,6 @@ namespace WikiApplication2
 
         private void listViewWiki_MouseClick(object sender, MouseEventArgs e)
         {
-            //String name = listViewWiki.SelectedItems[0].SubItems[0].Text;
-            //String category = listViewWiki.SelectedItems[0].SubItems[1].Text;
-            //String definition = listViewWiki.SelectedItems[0].SubItems[3].Text;
-            //highLightValue();
-            //textBoxName.Text = name;
-            //comboBoxCategory.Text = category;
-            //textBoxDefinition.Text = definition;
             int currentRecord = listViewWiki.SelectedIndices[0];
             if (currentRecord < 0)
             {
@@ -293,12 +256,9 @@ namespace WikiApplication2
             {
                 textBoxName.Text = Wiki[currentRecord].getName();
                 comboBoxCategory.Text = Wiki[currentRecord].getCategory();
-                highLightValue();
                 textBoxDefinition.Text = Wiki[currentRecord].getDefinition();
+                highLightValue();
             }
-
-
-
         }
 
         private void textBoxName_MouseDoubleClick(object sender, MouseEventArgs e)

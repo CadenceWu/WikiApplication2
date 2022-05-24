@@ -22,11 +22,12 @@ namespace WikiApplication2
             this.Name = name;
         }
         public int CompareTo(Information otherName) 
-        {
+        {   
+
             return this.Name.CompareTo(otherName.Name);
         }
         //public int Compare(Information x, Information y)
-        //{ 
+        //{
         //    return x.Name.CompareTo(y.Name);
         //}
 
