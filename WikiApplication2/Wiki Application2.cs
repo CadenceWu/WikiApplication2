@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace WikiApplication2
 {
@@ -18,6 +20,8 @@ namespace WikiApplication2
         }
         List<Information> Wiki = new List<Information>();
         string selectRadio;
+        string defaultFileName = "default.bin";
+
 
         private void clearTextbox()
         {
@@ -47,10 +51,9 @@ namespace WikiApplication2
             else
                 return true;
         }
-        private Boolean highLightValue()
+        private Boolean highLightValue(int index)
         {
-            int currentRecord = listViewWiki.SelectedIndices[0];
-            string structure = Wiki[currentRecord].getStructure();
+            string structure = Wiki[index].getStructure();
 
             if (structure == "Linear")
             {
@@ -101,14 +104,17 @@ namespace WikiApplication2
                 {
                     MessageBox.Show("The name is already existed");
                 }
-                Information newInfo = new Information();
-                newInfo.setName(textBoxName.Text);
-                newInfo.setCategory(comboBoxCategory.Text.ToString());
-                newInfo.setStructure(returnValue(selectRadio));
-                newInfo.setDefinition(textBoxDefinition.Text);
-                Wiki.Add(newInfo);
+                else
+                {
+                    Information newInfo = new Information();
+                    newInfo.setName(textBoxName.Text);
+                    newInfo.setCategory(comboBoxCategory.Text.ToString());
+                    newInfo.setStructure(returnValue(selectRadio));
+                    newInfo.setDefinition(textBoxDefinition.Text);
+                    Wiki.Add(newInfo);
 
-                MessageBox.Show(newInfo.getStructure());
+                    MessageBox.Show(newInfo.getStructure());
+                }
             }
             else 
             {
@@ -121,57 +127,32 @@ namespace WikiApplication2
 
         private void buttonDelete_Click(object sender, EventArgs e)
         {
-            listViewWiki.Items.RemoveAt(listViewWiki.SelectedIndices[0]);
+            try
+            {
+                int currentRecord = listViewWiki.SelectedIndices[0];
+                DialogResult deleteRecord;
 
-           // listViewWiki.SelectedItems[0].Remove();
-            //Wiki.Remove();
-
-            //foreach (information info in Wiki)
-            //{
-                
-            //    //if(info.getName().Equals(textBoxName.Text))
-            //    //{
-
-            //    //}
-            //    info.setName(textBoxName.Text);
-            //    info.setCategory(comboBoxCategory.Text.ToString());
-            //    info.setStructure(returnValue(selectRadio));
-            //    info.setDefinition(textBoxDefinition.Text);
-            //    Wiki.Remove(info);
-            //}
-            //displayInformation();
-            // Wiki.RemoveAt(listViewWiki.Items.IndexOf(itemSelected.Index));
-
-            //foreach (ListViewItem itemSelected in listViewWiki.SelectedItems)
-
-            //{
-            //    listViewWiki.Items.Remove(itemSelected);
-            //    //listViewWiki.SelectedIndices.Remove(itemSelected.Index);
-
-            //    //information newInfo = new information();
-            //    //newInfo.setName(textBoxName.Text);
-            //    //newInfo.setCategory(comboBoxCategory.Text.ToString());
-            //    //newInfo.setStructure(returnValue(selectRadio));
-            //    //newInfo.setDefinition(textBoxDefinition.Text);
-            //    //Wiki.Remove(newInfo);
-
-            //   
-
-            //    //if (itemSelected != null)
-            //    //{
-
-
-            //    //foreach (information item in Wiki) 
-            //    //{
-
-            //    //}
-            //    //}
-
-            //}
-            //// var itemRemove = Wiki.Single(r => r.getName() == listViewWiki.SelectedIndicese[0].SubItems[0].Text);
-            // Wiki.Remove(itemRemove);
-            // displayInformation();
-
+                //If there is an item selected
+                if (currentRecord != -1)
+                {
+                    deleteRecord = MessageBox.Show("Do you want to delete this data?",
+                    "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (deleteRecord == DialogResult.Yes)
+                    {
+                        Wiki.RemoveAt(currentRecord);
+                        if (deleteRecord == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                    }
+                    displayInformation();
+                    clearTextbox();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Please select an item from the list box");
+            }
         }
 
         private void buttonEdit_Click(object sender, EventArgs e)
@@ -184,14 +165,17 @@ namespace WikiApplication2
                 {
                     MessageBox.Show("The name is already existed");
                 }
-                int currentRecord = listViewWiki.SelectedIndices[0];
+                else 
+                {
+                    int currentRecord = listViewWiki.SelectedIndices[0];
 
-                Wiki[currentRecord].setName(textBoxName.Text);
-                Wiki[currentRecord].setCategory(comboBoxCategory.Text);
-                Wiki[currentRecord].setStructure(returnValue(info.getStructure()));
-                Wiki[currentRecord].setDefinition(textBoxDefinition.Text);
-                displayInformation();
-                clearTextbox();
+                    Wiki[currentRecord].setName(textBoxName.Text);
+                    Wiki[currentRecord].setCategory(comboBoxCategory.Text);
+                    Wiki[currentRecord].setStructure(returnValue(info.getStructure()));
+                    Wiki[currentRecord].setDefinition(textBoxDefinition.Text);
+                    displayInformation();
+                }
+                    clearTextbox();
             }
             else
             {
@@ -201,43 +185,97 @@ namespace WikiApplication2
 
         private void buttonSearch_Click(object sender, EventArgs e)
         {
-            
             int index = Wiki.BinarySearch(new Information(textBoxSearch.Text));
 
             if (!string.IsNullOrEmpty(textBoxSearch.Text))
             {
                 if (index >= 0)
                 {
+                    toolStripStatusLabel.Text = "Found";
+                    displayInformation();
+                    listViewWiki.Items[index].BackColor = Color.Yellow;
                     textBoxName.Text = Wiki[index].getName();
                     comboBoxCategory.Text = Wiki[index].getCategory();
                     textBoxDefinition.Text = Wiki[index].getDefinition();
-                    displayInformation();
-                    listViewWiki.Items[index].BackColor = Color.Yellow;
+                    highLightValue(index);
                 }
-                else
+                else 
                 {
                     toolStripStatusLabel.Text = " ";
                     toolStripStatusLabel.Text = " Not Found ";
+                    displayInformation();
                 }
-                displayInformation();
-                toolStripStatusLabel.Text = "Found";
                 textBoxSearch.Clear();
             }
             else
             {
-                MessageBox.Show("Enter the searched data name.");
+                MessageBox.Show("Enter the name to search.");
             }
-            displayInformation();
         }
 
+        private void openRecord(string openFileName)
+        {
+            //try
+            //{
+            //    if (File.Exists(openFileName))
+            //    {
+            //        using (Stream stream = File.Open(openFileName, FileMode.Open, FileAccess.Read))
+            //        {
+            //            BinaryFormatter bin = new BinaryFormatter();
+
+                      
+            //                    //Read the information from the binary file and list them in the listview
+            //                    Wiki = (string)bin.Deserialize(stream);
+                         
+            //        }
+            //    }
+            //}
+            //catch (IOException ex)
+            //{
+            //    MessageBox.Show(ex.ToString());
+            //}
+            //displayArray();
+        }
         private void buttonOpen_Click(object sender, EventArgs e)
         {
 
         }
-
+        private void saveRecord(string saveFileName)
+        {
+            try
+            {
+                //Open a stream for writing
+                using (FileStream stream = File.Open(saveFileName, FileMode.Create))
+                {
+                    // Construct a BinaryFormatter and use it to serialize the data to the stream.
+                    BinaryFormatter bin = new BinaryFormatter();
+                    // BinaryWriter writer = new BinaryWriter(stream);
+                    bin.Serialize(stream, Wiki);
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            SaveFileDialog saveFileDialogVG = new SaveFileDialog();
+            saveFileDialogVG.InitialDirectory = Application.StartupPath;
+            saveFileDialogVG.Filter = "BIN Files|*.bin";//Filter files by extensioin
+            saveFileDialogVG.Title = "Save a BIN File";
+            saveFileDialogVG.DefaultExt = "bin";//Default file extension
+            saveFileDialogVG.ShowDialog();
 
+            string fileName = saveFileDialogVG.FileName;
+            if (saveFileDialogVG.FileName != "")
+            {
+                saveRecord(fileName);
+            }
+            else
+            {
+                saveRecord(defaultFileName);
+            }
         }
 
         private void FormWikiApplication2_Load(object sender, EventArgs e)
@@ -248,17 +286,11 @@ namespace WikiApplication2
         private void listViewWiki_MouseClick(object sender, MouseEventArgs e)
         {
             int currentRecord = listViewWiki.SelectedIndices[0];
-            if (currentRecord < 0)
-            {
-                MessageBox.Show("Select a record from the List Box");
-            }
-            else 
-            {
-                textBoxName.Text = Wiki[currentRecord].getName();
-                comboBoxCategory.Text = Wiki[currentRecord].getCategory();
-                textBoxDefinition.Text = Wiki[currentRecord].getDefinition();
-                highLightValue();
-            }
+            
+            textBoxName.Text = Wiki[currentRecord].getName();
+            comboBoxCategory.Text = Wiki[currentRecord].getCategory();
+            textBoxDefinition.Text = Wiki[currentRecord].getDefinition();
+            highLightValue(currentRecord);
         }
 
         private void textBoxName_MouseDoubleClick(object sender, MouseEventArgs e)
