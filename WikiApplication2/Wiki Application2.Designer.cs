@@ -132,13 +132,6 @@
             // 
             this.comboBoxCategory.AllowDrop = true;
             this.comboBoxCategory.FormattingEnabled = true;
-            this.comboBoxCategory.Items.AddRange(new object[] {
-            "Array",
-            "List",
-            "Tree",
-            "Graphs",
-            "Abstract",
-            "Hash"});
             this.comboBoxCategory.Location = new System.Drawing.Point(67, 75);
             this.comboBoxCategory.Name = "comboBoxCategory";
             this.comboBoxCategory.Size = new System.Drawing.Size(108, 21);
@@ -288,6 +281,7 @@
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.buttonAdd);
             this.Text = "Wiki Application2";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormWikiApplication2_FormClosed);
             this.Load += new System.EventHandler(this.FormWikiApplication2_Load);
             this.groupBoxStructure.ResumeLayout(false);
             this.groupBoxStructure.PerformLayout();

@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-
+//C# Assessment 2 (WikiApplication 2)
+//Started Date:4/2022
+/*A Wiki application which stores Data structure information. The application allows a user
+to Add, Delete, Edit, and search the data. It also allows a user to open and save the file.*/
 namespace WikiApplication2
 {
     public partial class FormWikiApplication2 : Form
@@ -17,11 +20,26 @@ namespace WikiApplication2
         public FormWikiApplication2()
         {
             InitializeComponent();
+            //6.4 Create and initialise a global string array with the six categories as indicated in the Data Structure Matrix. 
+            string[] categories = new[] { "Array", "List", "Tree", "Graphs", "Abstract", "Hash" };
+            populateComboBox(categories);//Call the method to initialize combo box
         }
+
         List<Information> Wiki = new List<Information>();
         string selectRadio;
-        string defaultFileName = "default.bin";
+        string defaultFileName = "AutoFileSaved";
 
+        //Create a custom method to populate the ComboBox 
+        private void populateComboBox(Array arrayCategory)
+        {
+            var combobox = new ComboBox
+            {
+                DataSource = arrayCategory,//Specify the combobox datasource as custom array.
+                DropDownStyle = ComboBoxStyle.DropDownList,
+            };
+            comboBoxCategory.Items.AddRange((object[])arrayCategory);//Add the custom array as combocategory items.
+
+        }
 
         private void clearTextbox()
         {
@@ -46,7 +64,7 @@ namespace WikiApplication2
         }
         private bool validName(string checkTheName)
         {
-            if (Wiki.Exists(x=> x.getName().Equals(checkTheName)))
+            if (Wiki.Exists(x => x.getName().Equals(checkTheName)))
                 return false;
             else
                 return true;
@@ -67,15 +85,15 @@ namespace WikiApplication2
         }
         private string returnValue(string selectRadio)
         {
-            Information info =new Information();
-           // string selectRadio;
+            Information info = new Information();
+            // string selectRadio;
 
             if (radioButtonLinear.Checked)
             {
 
                 selectRadio = radioButtonLinear.Text;
                 info.setStructure(selectRadio);
-                
+
             }
             else if (radioButtonNonLinear.Checked)
             {
@@ -88,14 +106,14 @@ namespace WikiApplication2
         }
         private void sortData() {
 
-           //Wiki = Wiki.OrderBy(o => o.getName()).ToList();
-           //listViewWiki.Sorting = SortOrder.Ascending;
-           Wiki.Sort();
+            //Wiki = Wiki.OrderBy(o => o.getName()).ToList();
+            //listViewWiki.Sorting = SortOrder.Ascending;
+            Wiki.Sort();
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            Information info=new Information();
+            Information info = new Information();
 
             if (!string.IsNullOrWhiteSpace(textBoxName.Text) && !string.IsNullOrWhiteSpace(comboBoxCategory.Text) &&
                 !string.IsNullOrWhiteSpace(returnValue(selectRadio)) && !string.IsNullOrWhiteSpace(textBoxDefinition.Text))
@@ -116,11 +134,11 @@ namespace WikiApplication2
                     MessageBox.Show(newInfo.getStructure());
                 }
             }
-            else 
+            else
             {
                 MessageBox.Show("Some text boxes are empty.");
             }
-          
+
             clearTextbox();
             displayInformation();
         }
@@ -165,7 +183,7 @@ namespace WikiApplication2
                 {
                     MessageBox.Show("The name is already existed");
                 }
-                else 
+                else
                 {
                     int currentRecord = listViewWiki.SelectedIndices[0];
 
@@ -175,7 +193,7 @@ namespace WikiApplication2
                     Wiki[currentRecord].setDefinition(textBoxDefinition.Text);
                     displayInformation();
                 }
-                    clearTextbox();
+                clearTextbox();
             }
             else
             {
@@ -199,7 +217,7 @@ namespace WikiApplication2
                     textBoxDefinition.Text = Wiki[index].getDefinition();
                     highLightValue(index);
                 }
-                else 
+                else
                 {
                     toolStripStatusLabel.Text = " ";
                     toolStripStatusLabel.Text = " Not Found ";
@@ -213,68 +231,96 @@ namespace WikiApplication2
             }
         }
 
-        private void openRecord(string openFileName)
-        {
-            //try
-            //{
-            //    if (File.Exists(openFileName))
-            //    {
-            //        using (Stream stream = File.Open(openFileName, FileMode.Open, FileAccess.Read))
-            //        {
-            //            BinaryFormatter bin = new BinaryFormatter();
-
-                      
-            //                    //Read the information from the binary file and list them in the listview
-            //                    Wiki = (string)bin.Deserialize(stream);
-                         
-            //        }
-            //    }
-            //}
-            //catch (IOException ex)
-            //{
-            //    MessageBox.Show(ex.ToString());
-            //}
-            //displayArray();
-        }
         private void buttonOpen_Click(object sender, EventArgs e)
         {
-
-        }
-        private void saveRecord(string saveFileName)
-        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();//Creat an OpenFileDialog control object
+            //openTextFile.InitialDirectory = Path.GetDirectoryName(Application.ExecutablePath);
+            openFileDialog.Filter = "Bin Flies (*.bin)|*.bin";
+            openFileDialog.DefaultExt = "bin";//Default file extension
+            openFileDialog.FileName = "defaultfile name";
+            openFileDialog.ShowDialog();
+            //currentFileName = openFile.FileName;
             try
             {
-                //Open a stream for writing
-                using (FileStream stream = File.Open(saveFileName, FileMode.Create))
+                using (var stream = File.Open(openFileDialog.FileName, FileMode.Open))
                 {
-                    // Construct a BinaryFormatter and use it to serialize the data to the stream.
-                    BinaryFormatter bin = new BinaryFormatter();
-                    // BinaryWriter writer = new BinaryWriter(stream);
-                    bin.Serialize(stream, Wiki);
+                    using (var reader = new BinaryReader(stream, Encoding.UTF8, false))
+                    {
+                        Wiki.Clear();
+                        while (stream.Position < stream.Length)
+                        {
+                            Information readInfo = new Information();
+                            readInfo.setName(reader.ReadString());
+                            readInfo.setCategory(reader.ReadString());
+                            readInfo.setStructure(reader.ReadString());
+                            readInfo.setDefinition(reader.ReadString());
+                            Wiki.Add(readInfo);
+                        }
+                    }
                 }
+                displayInformation();
             }
-            catch (IOException ex)
+            catch (IOException)
             {
-                MessageBox.Show(ex.ToString());
+                return;
             }
         }
+
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            //The SaveFileDialog control prompts the user to select a location for saving
+            //a file and allows the user to specify the name of the file to save data.
             SaveFileDialog saveFileDialogVG = new SaveFileDialog();
-            saveFileDialogVG.InitialDirectory = Application.StartupPath;
+            //saveFileDialogVG.InitialDirectory = Application.StartupPath;
             saveFileDialogVG.Filter = "BIN Files|*.bin";//Filter files by extensioin
             saveFileDialogVG.Title = "Save a BIN File";
             saveFileDialogVG.DefaultExt = "bin";//Default file extension
+            saveFileDialogVG.FileName = "default filename";
             saveFileDialogVG.ShowDialog();
 
-            string fileName = saveFileDialogVG.FileName;
-            if (saveFileDialogVG.FileName != "")
+            SaveFile(saveFileDialogVG.FileName);    
+            //try
+            //{
+            //    using (var stream = File.Open(saveFileDialogVG.FileName, FileMode.Create))
+            //    {
+            //        using (var writer = new BinaryWriter(stream, Encoding.UTF8, false))
+            //        {
+            //            foreach (Information x in Wiki)
+            //            {
+            //                writer.Write(x.getName());
+            //                writer.Write(x.getCategory());
+            //                writer.Write(x.getStructure());
+            //                writer.Write(x.getDefinition());
+            //            }
+            //        }
+            //    }
+            //}
+            //catch (IOException)
+            //{
+            //    MessageBox.Show("File not saved");
+            //}
+        }
+        private void SaveFile(string filename)
+        {
+            try
             {
-                saveRecord(fileName);
+                using (var stream = File.Open(filename, FileMode.Create))
+                {
+                    using (var writer = new BinaryWriter(stream, Encoding.UTF8, false))
+                    {
+                        foreach (Information x in Wiki)
+                        {
+                            writer.Write(x.getName());
+                            writer.Write(x.getCategory());
+                            writer.Write(x.getStructure());
+                            writer.Write(x.getDefinition());
+                        }
+                    }
+                }
             }
-            else
+            catch (IOException)
             {
-                saveRecord(defaultFileName);
+                MessageBox.Show("File not saved");
             }
         }
 
@@ -309,5 +355,36 @@ namespace WikiApplication2
         {
             reset();
         }
+
+        private void FormWikiApplication2_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            int number = 0;
+            string newValue;
+            string newFileName;
+            try
+            {
+                if (listViewWiki.Items != null)
+                {
+                    if (File.Exists(defaultFileName))
+                    {
+                        // int number = int.Parse(Path.GetFileNameWithoutExtension(defaultFileName).Remove(0, 5));
+
+                        number++;
+                        //if (number < 9)
+                        //    newValue = "0" + number.ToString();
+                        //else
+                            newValue = number.ToString();
+                         newFileName = ("AutoFilesSaved " + newValue + ".bin");
+                         SaveFile(newFileName);
+                    }
+                }
+            }
+            catch 
+            {
+                return;
+            }
+        }
+
+       
     }
 }
