@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Diagnostics;
 //C# Assessment 2 (WikiApplication 2)
-//Started Date:4/2022
+//Date:4/2022-06/2022
 /*A Wiki application which stores Data structure information. The application allows a user
 to Add, Delete, Edit, and search the data. It also allows a user to open and save the file.*/
 namespace WikiApplication2
@@ -62,13 +63,25 @@ namespace WikiApplication2
                 item.SubItems.Add(info.getDefinition());
             }
         }
+        //6.5 Create a custom ValidName method which will take a parameter string value from the Textbox Name
+        //and returns a Boolean after checking for duplicates.Use the built in List<T> method “Exists” 
         private bool validName(string checkTheName)
         {
+            //Check if there is any Data Structure name in the Wiki list the same as user input name
             if (Wiki.Exists(x => x.getName().Equals(checkTheName)))
-                return false;
+
+            return false;
+
             else
                 return true;
+            Trace.Indent();
+            Trace.WriteLine("Just print sth");
+
+            Trace.Assert(Wiki.Exists(x => x.getName().Equals(checkTheName)), "It is a valid name");
+            Trace.Unindent();
+           // Trace.WriteLineIf(Wiki.Exists(x => x.getName().Equals(checkTheName)), "");
         }
+
         private Boolean highLightValue(int index)
         {
             string structure = Wiki[index].getStructure();
@@ -121,6 +134,10 @@ namespace WikiApplication2
                 if (!validName(textBoxName.Text))
                 {
                     MessageBox.Show("The name is already existed");
+
+                   // Trace.WriteLine("Just print sth");
+                    //Trace.Assert(validName(textBoxName.Text), "It is not a valid name");
+
                 }
                 else
                 {
@@ -130,8 +147,7 @@ namespace WikiApplication2
                     newInfo.setStructure(returnValue(selectRadio));
                     newInfo.setDefinition(textBoxDefinition.Text);
                     Wiki.Add(newInfo);
-
-                    MessageBox.Show(newInfo.getStructure());
+                    //Trace.WriteLineIf(validName(textBoxName.Text), "It is a valid name");
                 }
             }
             else
@@ -166,6 +182,8 @@ namespace WikiApplication2
                     }
                     displayInformation();
                     clearTextbox();
+                    Trace.WriteLine("Trace Testing");
+                    Debug.WriteLine("Debug Information-Product Starting ");
                 }
             }
             catch
