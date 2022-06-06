@@ -27,7 +27,8 @@ namespace WikiApplication2
 
         List<Information> Wiki = new List<Information>();
         string selectRadio;
-        string defaultFileName = "AutoFileSaved";
+        string currentFileName = "";
+        //string currentFileName = "";
 
         //Create a custom method to populate the ComboBox 
         private void populateComboBox(Array arrayCategory)
@@ -38,7 +39,6 @@ namespace WikiApplication2
                 DropDownStyle = ComboBoxStyle.DropDownList,
             };
             comboBoxCategory.Items.AddRange((object[])arrayCategory);//Add the custom array as combocategory items.
-
         }
 
         private void clearTextbox()
@@ -148,6 +148,7 @@ namespace WikiApplication2
             try
             {
                 int currentRecord = listViewWiki.SelectedIndices[0];
+
                 DialogResult deleteRecord;
 
                 //If there is an item selected
@@ -234,10 +235,10 @@ namespace WikiApplication2
         private void buttonOpen_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();//Creat an OpenFileDialog control object
-            //openTextFile.InitialDirectory = Path.GetDirectoryName(Application.ExecutablePath);
+           // openFileDialog.InitialDirectory = Path.GetDirectoryName(Application.ExecutablePath);
             openFileDialog.Filter = "Bin Flies (*.bin)|*.bin";
             openFileDialog.DefaultExt = "bin";//Default file extension
-            openFileDialog.FileName = "defaultfile name";
+            openFileDialog.FileName="defaultName.bin";
             openFileDialog.ShowDialog();
             //currentFileName = openFile.FileName;
             try
@@ -249,6 +250,9 @@ namespace WikiApplication2
                         Wiki.Clear();
                         while (stream.Position < stream.Length)
                         {
+                          //FileName= openFileDialog.FileName;
+                          currentFileName = openFileDialog.FileName;
+
                             Information readInfo = new Information();
                             readInfo.setName(reader.ReadString());
                             readInfo.setCategory(reader.ReadString());
@@ -275,32 +279,13 @@ namespace WikiApplication2
             saveFileDialogVG.Filter = "BIN Files|*.bin";//Filter files by extensioin
             saveFileDialogVG.Title = "Save a BIN File";
             saveFileDialogVG.DefaultExt = "bin";//Default file extension
-            saveFileDialogVG.FileName = "default filename";
+            saveFileDialogVG.FileName = "defaultFileName.bin";
             saveFileDialogVG.ShowDialog();
 
-            SaveFile(saveFileDialogVG.FileName);    
-            //try
-            //{
-            //    using (var stream = File.Open(saveFileDialogVG.FileName, FileMode.Create))
-            //    {
-            //        using (var writer = new BinaryWriter(stream, Encoding.UTF8, false))
-            //        {
-            //            foreach (Information x in Wiki)
-            //            {
-            //                writer.Write(x.getName());
-            //                writer.Write(x.getCategory());
-            //                writer.Write(x.getStructure());
-            //                writer.Write(x.getDefinition());
-            //            }
-            //        }
-            //    }
-            //}
-            //catch (IOException)
-            //{
-            //    MessageBox.Show("File not saved");
-            //}
+            saveFile(saveFileDialogVG.FileName);    
+            
         }
-        private void SaveFile(string filename)
+        private void saveFile(string filename)
         {
             try
             {
@@ -358,33 +343,30 @@ namespace WikiApplication2
 
         private void FormWikiApplication2_FormClosed(object sender, FormClosedEventArgs e)
         {
-            int number = 0;
-            string newValue;
-            string newFileName;
+            DialogResult savedRecord;
+            string FileName = "AutoSaved.bin";
+         
             try
             {
-                if (listViewWiki.Items != null)
+                savedRecord = MessageBox.Show("Do you want to save the changes? \n( Ignore the message if there was no change ))",
+                 "Saved Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (savedRecord == DialogResult.Yes)
                 {
-                    if (File.Exists(defaultFileName))
-                    {
-                        // int number = int.Parse(Path.GetFileNameWithoutExtension(defaultFileName).Remove(0, 5));
+                    saveFile(currentFileName);
 
-                        number++;
-                        //if (number < 9)
-                        //    newValue = "0" + number.ToString();
-                        //else
-                            newValue = number.ToString();
-                         newFileName = ("AutoFilesSaved " + newValue + ".bin");
-                         SaveFile(newFileName);
-                    }
+                }
+                else if (savedRecord == DialogResult.Cancel)
+                {
+                    return;
                 }
             }
             catch 
             {
-                return;
+                saveFile(FileName);
+                MessageBox.Show("Save File as AutoSaved.bin");
             }
+
         }
 
-       
     }
 }
