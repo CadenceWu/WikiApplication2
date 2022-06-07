@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+//6.1 A separate class file to hold the four data items of the Data Structure (use the Data Structure Matrix as a guide).
+//    Use auto-implemented properties for the fields which must be of type “string”. Save the class as “Information.cs”.
 namespace WikiApplication2
-{
+{   //Implements an IComparable<T> interface. 
+    //The Inforamtion class has following attributes: Name,Category, Structure and Definition
     internal class Information : IComparable<Information>
     {
         public string Name { get; set; }
@@ -23,13 +25,9 @@ namespace WikiApplication2
         }
         public int CompareTo(Information otherName) 
         {   
-
+            //Compare current parameter with otheName.Name parameter
             return this.Name.CompareTo(otherName.Name);
         }
-        //public int Compare(Information x, Information y)
-        //{
-        //    return x.Name.CompareTo(y.Name);
-        //}
 
         public void setName(string newName)
         {
